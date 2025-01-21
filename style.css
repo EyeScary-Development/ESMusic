@@ -125,3 +125,7 @@ header h1 {
 .controls button:active {
     transform: scale(0.95);
 }
+
+.annoying-spacer {
+    height: 200px;
+}
