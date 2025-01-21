@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeScary Music</title>
+    <link href="style.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>EyeScary Music</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="song-list">
+            <!-- Example Song Cards -->
+            <div class="song-card">
+                <img src="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png" alt="Album Art">
+                <p class="song-title">Harmony</p>
+                <p class="album-title">ESDP1</p>
+                <br>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP1/Harmony.mp3')">Play</button>
+            </div>
+
+            <div class="song-card">
+                <img src="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png" alt="Album Art">
+                <p class="song-title">AGPM</p>
+                <p class="album-title">ESDP1</p>
+                <br>
+                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP1/AGPM.mp3')">Play</button>
+            </div>
+
+            <div class="song-card">
+                <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
+                <p class="song-title">Stronge</p>
+                <p class="album-title">ESDP2</p>
+                <br>
+                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge.mp3')">Play</button>
+            </div>
+
+            <div class="song-card">
+                <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
+                <p class="song-title">Stronge 2</p>
+                <p class="album-title">ESDP2</p>
+                <br>
+                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge_2.mp3')">Play</button>
+            </div>
+
+            <div class="song-card">
+                <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
+                <p class="song-title">BHP IS A ONE CENT STOCK FRAUD</p>
+                <p class="album-title">ESDP2</p>
+                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD.mp3')">Play</button>
+            </div>
+
+            <div class="song-card">
+                <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
+                <p class="song-title">BHP IS A ONE CENT STOCK FRAUD 2</p>
+                <p class="album-title">ESDP2</p>
+                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD_2.mp3')">Play</button>
+            </div>
+
+            <!-- Add more song cards as needed -->
+        </div>
+
+        <div class="controls">
+            <h2>Now Playing</h2>
+            <p id="current-song">No song playing</p>
+            <button onclick="togglePlayPause()" id="play-pause-button">⏵</button>
+            <button onclick="stopSong()">⏹</button>
+        </div>
+    </div>
+
+    <audio id="audio-player" style="display: none;"></audio>
+
+    <script>
+        const audioPlayer = document.getElementById('audio-player');
+        const currentSong = document.getElementById('current-song');
+        const playPauseButton = document.getElementById('play-pause-button');
+
+        function playSong(songUrl) {
+            audioPlayer.src = songUrl;
+            audioPlayer.play();
+            currentSong.textContent = `Playing: ${songUrl.split('/').pop()}`;
+            playPauseButton.innerHTML = '&#9208;';
+        }
+
+        function togglePlayPause() {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playPauseButton.innerHTML = '&#9208;';
+                if (audioPlayer.currentTime === 0) {
+                    currentSong.textContent = 'Playing: No song playing';
+                }
+            } else {
+                audioPlayer.pause();
+                playPauseButton.innerHTML = '⏵';
+            }
+        }
+
+        function stopSong() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            currentSong.textContent = 'No song playing';
+            playPauseButton.innerHTML = '⏵';
+        }
+    </script>
+</body>
+
+</html>
