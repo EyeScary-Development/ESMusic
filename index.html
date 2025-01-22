@@ -15,7 +15,6 @@
 
     <div class="main-container">
         <div class="song-list">
-            <!-- Example Song Cards -->
             <div class="song-card">
                 <img src="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png" alt="Album Art">
                 <p class="song-title">Harmony</p>
@@ -30,7 +29,8 @@
                 <p class="song-title">AGPM</p>
                 <p class="album-title">ESDP1</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP1/AGPM.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP1/AGPM.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -38,7 +38,8 @@
                 <p class="song-title">Stronge</p>
                 <p class="album-title">ESDP2</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -46,21 +47,24 @@
                 <p class="song-title">Stronge 2</p>
                 <p class="album-title">ESDP2</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge_2.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge_2.mp3')">Play</button>
             </div>
 
             <div class="song-card">
                 <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
                 <p class="song-title">BHP IS A ONE CENT STOCK FRAUD</p>
                 <p class="album-title">ESDP2</p>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD.mp3')">Play</button>
             </div>
 
             <div class="song-card">
                 <img src="https://wilburwilliams.uk/favicon.ico" alt="Album Art">
                 <p class="song-title">BHP IS A ONE CENT STOCK FRAUD 2</p>
                 <p class="album-title">ESDP2</p>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD_2.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD_2.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -68,7 +72,8 @@
                 <p class="song-title">E</p>
                 <p class="album-title">ESDP3</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/E.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/E.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -76,7 +81,8 @@
                 <p class="song-title">E 2</p>
                 <p class="album-title">ESDP3</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/E_2.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/E_2.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -84,7 +90,8 @@
                 <p class="song-title">England</p>
                 <p class="album-title">ESDP3</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/England.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/England.mp3')">Play</button>
             </div>
 
             <div class="song-card">
@@ -92,18 +99,23 @@
                 <p class="song-title">England 2</p>
                 <p class="album-title">ESDP3</p>
                 <br>
-                <button class="play-button" onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/England_2.mp3')">Play</button>
+                <button class="play-button"
+                    onclick="playSong('https://eyescary-development.github.io/CDN/musik/ESDP3/England_2.mp3')">Play</button>
             </div>
             <!-- Add more song cards as needed -->
         </div>
 
         <div class="annoying-spacer">
-            <!-- This is a spacer element to ensure the song cards are all on screen -->
+                
         </div>
 
         <div class="controls">
             <h2>Now Playing</h2>
             <p id="current-song">No song playing</p>
+            <progress id="song-progress" value="0" max="100"></progress>
+            <div id="time-display">
+                <span id="current-time">0:00</span> / <span id="total-duration">0:00</span>
+            </div>
             <button onclick="togglePlayPause()" id="play-pause-button">⏵</button>
             <button onclick="stopSong()">⏹</button>
         </div>
@@ -115,6 +127,15 @@
         const audioPlayer = document.getElementById('audio-player');
         const currentSong = document.getElementById('current-song');
         const playPauseButton = document.getElementById('play-pause-button');
+        const songProgress = document.getElementById('song-progress');
+        const currentTimeDisplay = document.getElementById('current-time');
+        const totalDurationDisplay = document.getElementById('total-duration');
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+            return `${minutes}:${secs}`;
+        }
 
         function playSong(songUrl) {
             audioPlayer.src = songUrl;
@@ -127,9 +148,6 @@
             if (audioPlayer.paused) {
                 audioPlayer.play();
                 playPauseButton.innerHTML = '&#9208;';
-                if (audioPlayer.currentTime === 0) {
-                    currentSong.textContent = 'Playing: No song playing';
-                }
             } else {
                 audioPlayer.pause();
                 playPauseButton.innerHTML = '⏵';
@@ -141,7 +159,25 @@
             audioPlayer.currentTime = 0;
             currentSong.textContent = 'No song playing';
             playPauseButton.innerHTML = '⏵';
+            updateProgress();
         }
+
+        function updateProgress() {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration || 0;
+
+            songProgress.value = (currentTime / duration) * 100 || 0;
+            currentTimeDisplay.textContent = formatTime(currentTime);
+            totalDurationDisplay.textContent = formatTime(duration);
+        }
+
+        audioPlayer.addEventListener('timeupdate', updateProgress);
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            totalDurationDisplay.textContent = formatTime(audioPlayer.duration);
+        });
+        audioPlayer.addEventListener('ended', () => {
+            stopSong();
+        });
     </script>
 </body>
 
