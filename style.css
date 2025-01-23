@@ -129,3 +129,43 @@ header h1 {
 .annoying-spacer {
     height: 400px;
 }
+
+#progress-container {
+    position: relative; 
+    width: 600px; 
+    height: 10px; 
+    background: #ccc; 
+    border-radius: 5px;
+}
+
+#progress-bar {
+    width: 0%; 
+    height: 100%; 
+    background: #007BFF; 
+    border-radius: 5px;
+}
+
+#progress-thumb {
+    position: absolute; 
+    top: 50%; 
+    left: 0%; 
+    width: 14px; 
+    height: 14px; 
+    background: #007BFF; 
+    border-radius: 50%; 
+    transform: translate(-50%, -50%); 
+    cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+    #progress-container {
+        width: 100%;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .controls {
+        width: 95%;
+    }
+    
+}
