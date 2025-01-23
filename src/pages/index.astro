@@ -1,0 +1,261 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SongCard from "../components/SongCard.astro";
+---
+
+<Layout title="Home">
+    <div class="main-container">
+        <div class="song-list">
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP1/Harmony.mp3"
+                songTitle="Harmony"
+                albumTitle="ESDP1"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP1/AGPM.mp3"
+                songTitle="AGPM"
+                albumTitle="ESDP1"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge.mp3"
+                songTitle="Stronge"
+                albumTitle="ESDP2"
+                albumArt="https://wilburwilliams.uk/favicon.ico"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge_2.mp3"
+                songTitle="Stronge 2"
+                albumTitle="ESDP2"
+                albumArt="https://wilburwilliams.uk/favicon.ico"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD.mp3"
+                songTitle="BHP IS A ONE CENT STOCK FRAUD"
+                albumTitle="ESDP2"
+                albumArt="https://wilburwilliams.uk/favicon.ico"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD_2.mp3"
+                songTitle="BHP IS A ONE CENT STOCK FRAUD 2"
+                albumTitle="ESDP2"
+                albumArt="https://wilburwilliams.uk/favicon.ico"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/E.mp3"
+                songTitle="E"
+                albumTitle="ESDP3"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/E_2.mp3"
+                songTitle="E 2"
+                albumTitle="ESDP3"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/England.mp3"
+                songTitle="England"
+                albumTitle="ESDP3"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
+            />
+            <SongCard
+                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/England_2.mp3"
+                songTitle="England 2"
+                albumTitle="ESDP3"
+                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
+            />
+        </div>
+
+        <div class="annoying-spacer"></div>
+
+        <div class="controls">
+            <h2>Now Playing</h2>
+            <p id="current-song">No song playing</p>
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+                <div id="progress-thumb"></div>
+            </div>
+            <div id="time-display">
+                <span id="current-time">0:00</span> / <span id="total-duration"
+                    >0:00</span
+                >
+            </div>
+            <div class="control-buttons">
+                <button onclick="togglePlayPause()" id="play-pause-button">⏵</button>
+                <button onclick="stopSong()">⏹</button>
+                <button onclick="skipSong()">⏭</button>
+            </div>
+        </div>
+
+        <audio id="audio-player" style="display: none;"></audio>
+    </div>
+    <div class="queue">
+        <h3>Song Queue</h3>
+        <button onclick="clearQueue()">Clear Queue</button>
+        <ul id="song-queue"></ul>
+    </div>
+</Layout>
+<script is:inline>
+    const audioPlayer = document.getElementById("audio-player");
+    const currentSong = document.getElementById("current-song");
+    const playPauseButton = document.getElementById("play-pause-button");
+    const progressContainer = document.getElementById("progress-container");
+    const progressBar = document.getElementById("progress-bar");
+    const progressThumb = document.getElementById("progress-thumb");
+    const currentTimeDisplay = document.getElementById("current-time");
+    const totalDurationDisplay = document.getElementById("total-duration");
+    const songQueueElement = document.getElementById("song-queue");
+
+    let songQueue = [];
+    let isDragging = false;
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60)
+            .toString()
+            .padStart(2, "0");
+        return `${minutes}:${secs}`;
+    }
+
+    function playSong(songUrl) {
+        audioPlayer.src = songUrl;
+        audioPlayer.play();
+        currentSong.textContent = `Playing: ${songUrl.split("/").pop()}`;
+        playPauseButton.innerHTML = "&#9208;";
+    }
+
+    function togglePlayPause() {
+        if (audioPlayer.paused) {
+            audioPlayer.play();
+            playPauseButton.innerHTML = "&#9208;";
+        } else {
+            audioPlayer.pause();
+            playPauseButton.innerHTML = "⏵";
+        }
+    }
+
+    function stopSong() {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        currentSong.textContent = "No song playing";
+        playPauseButton.innerHTML = "⏵";
+        updateProgress();
+    }
+
+    function updateProgress() {
+        if (!isDragging) {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration || 0;
+            const progressPercent = (currentTime / duration) * 100 || 0;
+
+            progressBar.style.width = `${progressPercent}%`;
+            progressThumb.style.left = `${progressPercent}%`;
+            currentTimeDisplay.textContent = formatTime(currentTime);
+            totalDurationDisplay.textContent = formatTime(duration);
+        }
+    }
+
+    function seek(event) {
+        const rect = progressContainer.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const progressWidth = rect.width;
+        const clickRatio = clickX / progressWidth;
+
+        if (audioPlayer.duration) {
+            audioPlayer.currentTime = clickRatio * audioPlayer.duration;
+        }
+    }
+
+    function startDrag(event) {
+        isDragging = true;
+        moveThumb(event);
+    }
+
+    function moveThumb(event) {
+        if (!isDragging) return;
+
+        const rect = progressContainer.getBoundingClientRect();
+        let clickX = event.clientX - rect.left;
+        const progressWidth = rect.width;
+
+        clickX = Math.max(0, Math.min(clickX, progressWidth));
+        const clickRatio = clickX / progressWidth;
+        const progressPercent = clickRatio * 100;
+
+        progressBar.style.width = `${progressPercent}%`;
+        progressThumb.style.left = `${progressPercent}%`;
+
+        if (audioPlayer.duration) {
+            audioPlayer.currentTime = clickRatio * audioPlayer.duration;
+        }
+    }
+
+    function endDrag() {
+        isDragging = false;
+    }
+
+    function addToQueue(songUrl) {
+        if (songUrl) {
+            songQueue.push(songUrl);
+            updateQueueDisplay();
+            if (audioPlayer.paused && !audioPlayer.src) {
+                playNextInQueue();
+            }
+        }
+    }
+
+    function updateQueueDisplay() {
+        songQueueElement.innerHTML = "";
+        songQueue.forEach((song, index) => {
+            const li = document.createElement("li");
+            li.textContent = song.split("/").pop();
+            if (li.textContent.length > 20) {
+                li.textContent = li.textContent.substring(0, 18) + "...";
+            }
+            if (index === 0) li.style.fontWeight = "bold";
+            songQueueElement.appendChild(li);
+        });
+    }
+
+    function playNextInQueue() {
+        if (songQueue.length > 0) {
+            const nextSong = songQueue.shift();
+            playSong(nextSong);
+            updateQueueDisplay();
+        } else {
+            stopSong();
+        }
+    }
+
+    function clearQueue() {
+        songQueue = [];
+        updateQueueDisplay();
+    }
+
+    function skipSong() {
+        if (songQueue.length > 0) {
+            const nextSong = songQueue.shift();
+            playSong(nextSong);
+            updateQueueDisplay();
+        } else {
+            stopSong();
+        }
+    }
+
+    audioPlayer.addEventListener("timeupdate", updateProgress);
+    audioPlayer.addEventListener("loadedmetadata", () => {
+        totalDurationDisplay.textContent = formatTime(
+            audioPlayer.duration,
+        );
+    });
+    audioPlayer.addEventListener("ended", () => {
+        playNextInQueue();
+    });
+
+    progressContainer.addEventListener("click", seek);
+    progressThumb.addEventListener("mousedown", startDrag);
+    document.addEventListener("mousemove", moveThumb);
+    document.addEventListener("mouseup", endDrag);
+</script>

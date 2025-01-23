@@ -5,6 +5,7 @@ body {
     font-family: 'Lexend', sans-serif;
     background-color: #181818;
     color: #ffffff;
+    max-width: 100%;
 }
 
 header {
@@ -21,7 +22,20 @@ header h1 {
 }
 
 .main-container {
+    float: left;
     padding: 1rem;
+    width: 75%;
+    margin: 0;
+}
+
+.queue {
+    float: left;
+    padding: 1rem;
+    width: 20%;
+    background-color: #282828;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
 }
 
 .song-list {
@@ -126,6 +140,13 @@ header h1 {
     transform: scale(0.95);
 }
 
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .annoying-spacer {
     height: 400px;
 }
@@ -168,4 +189,12 @@ header h1 {
         width: 95%;
     }
     
+    .queue {
+        display: none;
+    }
+
+    .main-container {
+        width: 93%;
+        float: center;
+    }
 }
