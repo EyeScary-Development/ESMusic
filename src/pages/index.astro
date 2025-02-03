@@ -1,71 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import SongCard from "../components/SongCard.astro";
+const response = await fetch('https://eyescary-development.github.io/CDN/musik/songlist.json'); // Replace with your actual data source
+const songs = await response.json();
+const songsArray = Object.values(songs);
 ---
 
 <Layout title="Home">
     <div class="main-container">
-        <div class="song-list">
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP1/Harmony.mp3"
-                songTitle="Harmony"
-                albumTitle="ESDP1"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP1/AGPM.mp3"
-                songTitle="AGPM"
-                albumTitle="ESDP1"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP1/ESDP1.png"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge.mp3"
-                songTitle="Stronge"
-                albumTitle="ESDP2"
-                albumArt="https://wilburwilliams.uk/favicon.ico"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/Stronge_2.mp3"
-                songTitle="Stronge 2"
-                albumTitle="ESDP2"
-                albumArt="https://wilburwilliams.uk/favicon.ico"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD.mp3"
-                songTitle="BHP IS A ONE CENT STOCK FRAUD"
-                albumTitle="ESDP2"
-                albumArt="https://wilburwilliams.uk/favicon.ico"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP2/BHP_IS_A_ONE_CENT_STOCK_FRAUD_2.mp3"
-                songTitle="BHP IS A ONE CENT STOCK FRAUD 2"
-                albumTitle="ESDP2"
-                albumArt="https://wilburwilliams.uk/favicon.ico"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/E.mp3"
-                songTitle="E"
-                albumTitle="ESDP3"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/E_2.mp3"
-                songTitle="E 2"
-                albumTitle="ESDP3"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/England.mp3"
-                songTitle="England"
-                albumTitle="ESDP3"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
-            />
-            <SongCard
-                songUrl="https://eyescary-development.github.io/CDN/musik/ESDP3/England_2.mp3"
-                songTitle="England 2"
-                albumTitle="ESDP3"
-                albumArt="https://eyescary-development.github.io/CDN/musik/ESDP3/ESDP3.png"
-            />
+        <div class="song-container">
+            {songsArray.map(song => (
+                <SongCard
+                  songUrl={song.songUrl}
+                  songTitle={song.songTitle}
+                  albumTitle={song.albumTitle}
+                  albumArt={song.albumArt}
+                />
+                <p style="padding: 10px"></p>
+              ))}
         </div>
 
         <div class="annoying-spacer"></div>
