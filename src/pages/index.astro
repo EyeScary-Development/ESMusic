@@ -204,7 +204,7 @@ import SongCard from "../components/SongCard.astro";
         .then(songs => {
             const songsArray = Object.values(songs);
             for (const song of songsArray) {
-                document.getElementById("song-list").innerHTML += "<div class='song-card'> <img src='"+song.albumArt+"' alt='Album Art'><p class='song-title'>"+song.songTitle+"</p><p class='album-title'>"+song.albumTitle+"</p><button class='play-button' onclick='addToQueue("+ song.songUrl +")'>Play</button></div>";
+                document.getElementById("song-list").innerHTML += "<div class='song-card'> <img src='"+song.albumArt+"' alt='Album Art'><p class='song-title'>"+song.songTitle+"</p><p class='album-title'>"+song.albumTitle+"</p><button class='play-button' onclick='addToQueue(`"+ song.songUrl +"`)'>Play</button></div>";
             }
         })
         .catch(error => console.error('Error fetching the song list:', error)); // Handle any errors
