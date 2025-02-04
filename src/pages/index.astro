@@ -254,6 +254,14 @@ import SongCard from "../components/SongCard.astro";
         playNextInQueue();
     });
 
+    document.addEventListener("DOMContentLoaded", function(){
+        const response = fetch('https://eyescary-development.github.io/CDN/musik/songlist.json'); // Replace with your actual data source
+        const songs = response.json();
+        const songsArray = Object.values(songs);
+        for (const song of songsArray) {
+            document.getElementById("song-container").innerHTML+="<SongCard songUrl="  + song.songUrl + " songTitle= " + song.songTitle + "albumTitle= " + song.albumTitle + "albumArt="+song.albumArt+"/>"
+        }
+    })
     progressContainer.addEventListener("click", seek);
     progressThumb.addEventListener("mousedown", startDrag);
     document.addEventListener("mousemove", moveThumb);
