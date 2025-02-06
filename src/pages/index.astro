@@ -4,6 +4,7 @@ import SongCard from "../components/SongCard.astro";
 ---
 
 <Layout title="Home">
+    <a id="dynamicfav" rel="shortcut icon"></a>
     <div class="main-container">
         <div class="song-list" id="song-list">
         </div>
@@ -64,6 +65,7 @@ import SongCard from "../components/SongCard.astro";
         audioPlayer.play();
         currentSong.textContent = `Playing: ${songUrl.split("/").pop()}`;
         playPauseButton.innerHTML = "&#9208;";
+        document.title = `${songUrl.split("/").pop()} | EyeScary Music`;
     }
 
     function togglePlayPause() {
