@@ -1,22 +1,20 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SongCard from "../components/SongCard.astro";
 ---
 
 <Layout title="Home">
-  <div class="queue" style="justify-content: space-between">
-    <h3 style="display: block;">Song Queue</h3>
-    <h3 style="display: block; text-align: right;">
-      <a onclick="clearQueue()">clear queue</a>
-      <a id="droptoggle" onclick="dropdown()">↓</a>
-    </h3>
-    <div id="dropdown" style="display: none; width: 100%; clear: both;">
-    <ul id="song-queue"></ul>
-  </div>
-  </div>
-    <div class="main-container">
-        <div class="song-list" id="song-list">
+    <div class="queue" style="justify-content: space-between">
+        <h3 style="display: block;">Song Queue</h3>
+        <h3 style="display: block; text-align: right;">
+            <button onclick="clearQueue()">clear queue</button>
+            <button id="droptoggle" onclick="dropdown()">↓</button>
+        </h3>
+        <div id="dropdown" style="display: none; width: 100%; clear: both;">
+            <ul id="song-queue"></ul>
         </div>
+    </div>
+    <div class="main-container">
+        <div class="song-list" id="song-list"></div>
 
         <div class="annoying-spacer"></div>
 
@@ -33,7 +31,9 @@ import SongCard from "../components/SongCard.astro";
                 >
             </div>
             <div class="control-buttons">
-                <button onclick="togglePlayPause()" id="play-pause-button">⏵</button>
+                <button onclick="togglePlayPause()" id="play-pause-button"
+                    >⏵</button
+                >
                 <button onclick="stopSong()">⏹</button>
                 <button onclick="skipSong()">⏭</button>
             </div>
@@ -118,15 +118,15 @@ import SongCard from "../components/SongCard.astro";
         isDragging = true;
         moveThumb(event);
     }
-    
-    function dropdown(){
-      if (document.getElementById("dropdown").style.display === "none"){
-      document.getElementById("dropdown").style.display = "flex"
-      document.getElementById("droptoggle").innerHTML = "↑"
-      } else{
-      document.getElementById("dropdown").style.display = "none"
-      document.getElementById("droptoggle").innerHTML = "↓"
-      }
+
+    function dropdown() {
+        if (document.getElementById("dropdown").style.display === "none") {
+            document.getElementById("dropdown").style.display = "flex";
+            document.getElementById("droptoggle").innerHTML = "↑";
+        } else {
+            document.getElementById("dropdown").style.display = "none";
+            document.getElementById("droptoggle").innerHTML = "↓";
+        }
     }
 
     function moveThumb(event) {
@@ -202,9 +202,7 @@ import SongCard from "../components/SongCard.astro";
 
     audioPlayer.addEventListener("timeupdate", updateProgress);
     audioPlayer.addEventListener("loadedmetadata", () => {
-        totalDurationDisplay.textContent = formatTime(
-            audioPlayer.duration,
-        );
+        totalDurationDisplay.textContent = formatTime(audioPlayer.duration);
     });
     audioPlayer.addEventListener("ended", () => {
         playNextInQueue();
@@ -214,16 +212,26 @@ import SongCard from "../components/SongCard.astro";
     progressThumb.addEventListener("mousedown", startDrag);
     document.addEventListener("mousemove", moveThumb);
     document.addEventListener("mouseup", endDrag);
-    document.addEventListener("DOMContentLoaded", function() {
-    fetch('https://eyescary-development.github.io/CDN/musik/songlist.json') // Replace with your actual data source
-        .then(response => response.json()) // Wait for the response and parse it as JSON
-        .then(songs => {
-            const songsArray = Object.values(songs);
-            for (const song of songsArray) {
-                document.getElementById("song-list").innerHTML += "<div class='song-card'> <img src='"+song.albumArt+"' alt='Album Art'><p class='song-title'>"+song.songTitle+"</p><p class='album-title'>"+song.albumTitle+"</p><button class='play-button' onclick='addToQueue(`"+ song.songUrl +"`)'>Play</button></div>";
-            }
-        })
-        .catch(error => console.error('Error fetching the song list:', error)); // Handle any errors
-  });
-
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("https://eyescary-development.github.io/CDN/musik/songlist.json") // Replace with your actual data source
+            .then((response) => response.json()) // Wait for the response and parse it as JSON
+            .then((songs) => {
+                const songsArray = Object.values(songs);
+                for (const song of songsArray) {
+                    document.getElementById("song-list").innerHTML +=
+                        "<div class='song-card'> <img src='" +
+                        song.albumArt +
+                        "' alt='Album Art'><p class='song-title'>" +
+                        song.songTitle +
+                        "</p><p class='album-title'>" +
+                        song.albumTitle +
+                        "</p><button class='play-button' onclick='addToQueue(`" +
+                        song.songUrl +
+                        "`)'>Play</button></div>";
+                }
+            })
+            .catch((error) =>
+                console.error("Error fetching the song list:", error),
+            ); // Handle any errors
+    });
 </script>

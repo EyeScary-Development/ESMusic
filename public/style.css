@@ -2,7 +2,7 @@
 
 body {
     margin: 0;
-    font-family: 'Lexend', sans-serif;
+    font-family: "Lexend", sans-serif;
     background-color: #181818;
     color: #ffffff;
     max-width: 100%;
@@ -21,17 +21,35 @@ header h1 {
     margin: 0;
 }
 
+button {
+    padding: 0.5rem 1rem;
+    background-color: #1db954;
+    border: none;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0 0.5rem;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #1ed760;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
 .main-container {
-    float: left;
     padding: 1rem;
-    width: 75%;
     margin: 0;
 }
 
 .queue {
-    top:0;
-    flex-wrap:wrap;
-    display:flex;
+    top: 0;
+    flex-wrap: wrap;
+    display: flex;
     padding: 1rem;
     width: 100% auto;
     background-color: #282828;
@@ -53,7 +71,9 @@ header h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: transform 0.2s, background-color 0.2s;
+    transition:
+        transform 0.2s,
+        background-color 0.2s;
 }
 
 .song-card:hover {
@@ -122,26 +142,6 @@ header h1 {
     color: #cccccc;
 }
 
-.controls button {
-    padding: 0.5rem 1rem;
-    background-color: #1db954;
-    border: none;
-    border-radius: 20px;
-    color: #ffffff;
-    font-size: 1rem;
-    cursor: pointer;
-    margin: 0 0.5rem;
-    transition: background-color 0.2s;
-}
-
-.controls button:hover {
-    background-color: #1ed760;
-}
-
-.controls button:active {
-    transform: scale(0.95);
-}
-
 .control-buttons {
     display: flex;
     gap: 0.5rem;
@@ -154,29 +154,29 @@ header h1 {
 }
 
 #progress-container {
-    position: relative; 
-    width: 600px; 
-    height: 10px; 
-    background: #ccc; 
+    position: relative;
+    width: 600px;
+    height: 10px;
+    background: #ccc;
     border-radius: 5px;
 }
 
 #progress-bar {
-    width: 0%; 
-    height: 100%; 
-    background: #007BFF; 
+    width: 0%;
+    height: 100%;
+    background: #007bff;
     border-radius: 5px;
 }
 
 #progress-thumb {
-    position: absolute; 
-    top: 50%; 
-    left: 0%; 
-    width: 14px; 
-    height: 14px; 
-    background: #007BFF; 
-    border-radius: 50%; 
-    transform: translate(-50%, -50%); 
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 14px;
+    height: 14px;
+    background: #007bff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
     cursor: pointer;
 }
 
@@ -190,7 +190,7 @@ header h1 {
     .controls {
         width: 95%;
     }
-    
+
     .main-container {
         width: 93%;
         float: center;
