@@ -6,8 +6,10 @@ import Layout from "../layouts/Layout.astro";
     <div class="queue" style="justify-content: space-between">
         <h3 style="display: block;">Song Queue</h3>
         <h3 style="display: block; text-align: right;">
-            <button onclick="clearQueue()">clear queue</button>
-            <button id="droptoggle" onclick="dropdown()">↓</button>
+          <button onclick="clearQueue()">clear queue</button>
+          <button onclick="importPlist()">Import queue/playlist</button>
+          <button onclick="exportPlist()">Export queue</button>
+          <button id="droptoggle" onclick="dropdown()">↓</button>
         </h3>
         <div id="dropdown" style="display: none; width: 100%; clear: both;">
             <ul id="song-queue"></ul>
@@ -160,6 +162,47 @@ import Layout from "../layouts/Layout.astro";
                 playNextInQueue();
             }
         }
+    }
+    
+    function downloadURI(uri, name) {
+      var link = document.createElement("a");
+      link.download = name; // <- name instead of 'name'
+      link.href = uri;
+      link.click();
+      link.remove();
+    }
+
+    function exportPlist(){
+      const blob = new Blob([songQueue], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      downloadURI(url, prompt("Playlist name:")+".espl");
+    }
+
+    function importPlist() {
+    console.log("upSave requested");
+
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".espl"; // Ensures only .espl files can be selected
+
+    input.onchange = (e) => {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+
+        reader.onload = (readerEvent) => {
+            var content = readerEvent.target.result.trim();
+            console.log("File content:", content);
+
+            var plist = content.split(","); // Convert comma-separated string to an array
+
+            plist.forEach(item => addToQueue(item));
+        };
+    };
+
+    input.click(); // Opens the file picker
     }
 
     function updateQueueDisplay() {
