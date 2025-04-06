@@ -5,11 +5,11 @@ import Layout from "../layouts/Layout.astro";
 <Layout title="Home">
     <div class="queue" style="justify-content: space-between">
         <h3 style="display: block;">Song Queue</h3>
-        <h3 style="display: block; text-align: right;">
-          <button onclick="clearQueue()">clear queue</button>
-          <button onclick="importPlist()">Import queue/playlist</button>
-          <button onclick="exportPlist()">Export queue</button>
-          <button id="droptoggle" onclick="dropdown()">↓</button>
+        <h3 class="queue-buttons">
+            <button onclick="clearQueue()">clear queue</button>
+            <button onclick="importPlist()">Import queue/playlist</button>
+            <button onclick="exportPlist()">Export queue</button>
+            <button id="droptoggle" onclick="dropdown()">↓</button>
         </h3>
         <div id="dropdown" style="display: none; width: 100%; clear: both;">
             <ul id="song-queue"></ul>
@@ -43,6 +43,7 @@ import Layout from "../layouts/Layout.astro";
 
         <audio id="audio-player" style="display: none;"></audio>
     </div>
+    <div id="toast-container"><h1>test</h1></div>
 </Layout>
 <script is:inline>
     const audioPlayer = document.getElementById("audio-player");
@@ -54,6 +55,7 @@ import Layout from "../layouts/Layout.astro";
     const currentTimeDisplay = document.getElementById("current-time");
     const totalDurationDisplay = document.getElementById("total-duration");
     const songQueueElement = document.getElementById("song-queue");
+    const toast = document.getElementById('toast-container');
 
     let songQueue = [];
     let isDragging = false;
@@ -160,49 +162,53 @@ import Layout from "../layouts/Layout.astro";
             updateQueueDisplay();
             if (audioPlayer.paused && !audioPlayer.src) {
                 playNextInQueue();
+            } else {
+                showToast();
+                setTimeout(hideToast, 3000);
+                toast.innerHTML = "Added to queue";
             }
         }
     }
-    
+
     function downloadURI(uri, name) {
-      var link = document.createElement("a");
-      link.download = name; // <- name instead of 'name'
-      link.href = uri;
-      link.click();
-      link.remove();
+        var link = document.createElement("a");
+        link.download = name; // <- name instead of 'name'
+        link.href = uri;
+        link.click();
+        link.remove();
     }
 
-    function exportPlist(){
-      const blob = new Blob([songQueue], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      downloadURI(url, prompt("Playlist name:")+".espl");
+    function exportPlist() {
+        const blob = new Blob([songQueue], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        downloadURI(url, prompt("Playlist name:") + ".espl");
     }
 
     function importPlist() {
-    console.log("upSave requested");
+        console.log("upSave requested");
 
-    var input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".espl"; // Ensures only .espl files can be selected
+        var input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".espl";
 
-    input.onchange = (e) => {
-        var file = e.target.files[0];
-        if (!file) return;
+        input.onchange = (e) => {
+            var file = e.target.files[0];
+            if (!file) return;
 
-        var reader = new FileReader();
-        reader.readAsText(file, "UTF-8");
+            var reader = new FileReader();
+            reader.readAsText(file, "UTF-8");
 
-        reader.onload = (readerEvent) => {
-            var content = readerEvent.target.result.trim();
-            console.log("File content:", content);
+            reader.onload = (readerEvent) => {
+                var content = readerEvent.target.result.trim();
+                console.log("File content:", content);
 
-            var plist = content.split(","); // Convert comma-separated string to an array
+                var plist = content.split(",");
 
-            plist.forEach(item => addToQueue(item));
+                plist.forEach((item) => addToQueue(item));
+            };
         };
-    };
 
-    input.click(); // Opens the file picker
+        input.click();
     }
 
     function updateQueueDisplay() {
@@ -231,6 +237,9 @@ import Layout from "../layouts/Layout.astro";
     function clearQueue() {
         songQueue = [];
         updateQueueDisplay();
+        showToast();
+        toast.innerHTML = "Queue cleared";
+        setTimeout(hideToast, 3000);
     }
 
     function skipSong() {
@@ -256,8 +265,10 @@ import Layout from "../layouts/Layout.astro";
     document.addEventListener("mousemove", moveThumb);
     document.addEventListener("mouseup", endDrag);
     document.addEventListener("DOMContentLoaded", function () {
-        fetch("https://eyescary-development.github.io/CDN/musik/songlist.json") // Replace with your actual data source
-            .then((response) => response.json()) // Wait for the response and parse it as JSON
+        showToast();
+        toast.innerHTML = "Loading songs...";
+        fetch("https://eyescary-development.github.io/CDN/musik/songlist.json")
+            .then((response) => response.json())
             .then((songs) => {
                 const songsArray = Object.values(songs);
                 for (const song of songsArray) {
@@ -276,5 +287,17 @@ import Layout from "../layouts/Layout.astro";
             .catch((error) =>
                 console.error("Error fetching the song list:", error),
             ); // Handle any errors
+        toast.innerHTML = "Song list loaded";
+        setTimeout(hideToast, 3000);
     });
+
+    function showToast() {
+        clearTimeout(toast.timeout);
+        toast.classList.add('show');
+    }
+
+    function hideToast() {
+        toast.classList.remove('show');
+    }
+
 </script>
