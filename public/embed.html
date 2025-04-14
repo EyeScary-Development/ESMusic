@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESMusic Player</title>
+    <link rel="dns-prefetch" href="https://assets.c48.uk">
+    <link rel="preconnect" href="https://assets.c48.uk" crossorigin>
+    <link rel="dns-prefetch" href="https://eyescary-development.github.io">
+    <link rel="preconnect" href="https://eyescary-development.github.io" crossorigin>
+    <style>
+        @import url(https://assets.c48.uk/fonts/lexend.css);
+
+        body {
+            margin: 0;
+            font-family: "Lexend", sans-serif;
+            background-color: #181818;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        #embed-container {
+            background-color: #202020;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            max-width: 700px;
+            width: 100%;
+            align-items: center;
+        }
+
+        #album-art {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .player-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #song-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        #song-album {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        #progress-container {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin: 1rem 0;
+        }
+
+        #progress {
+            width: 100%;
+            height: 8px;
+            background-color: #555;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        #progress-filled {
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 5px;
+            width: 0%;
+        }
+
+        #progress-thumb {
+            position: absolute;
+            top: 50%;
+            left: 0%;
+            width: 14px;
+            height: 14px;
+            background: #007bff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: left 0.1s;
+        }
+
+
+        #time-display {
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .control-button {
+            background-color: #1db954;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .control-button:hover {
+            background-color: #1ed760;
+        }
+
+        @media (max-width: 600px) {
+            #embed-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #album-art {
+                width: 100%;
+                height: auto;
+            }
+
+            .player-content {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="embed-container">
+        <img id="album-art" src="" alt="Album Art" style="display: none;" />
+        <div class="player-content">
+            <h1 id="song-name">Now Playing</h1>
+            <p id="song-album">No song playing</p>
+
+            <div id="progress-container">
+                <div id="progress">
+                    <div id="progress-filled"></div>
+                    <div id="progress-thumb"></div>
+                </div>
+                <div id="time-display">0:00 / 0:00</div>
+            </div>
+
+            <div class="controls">
+                <button id="play-btn" class="control-button">▶</button>
+            </div>
+
+            <audio id="audio"></audio>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById("audio");
+        const playBtn = document.getElementById("play-btn");
+        const progress = document.getElementById("progress");
+        const progressFilled = document.getElementById("progress-filled");
+        const progressThumb = document.getElementById("progress-thumb");
+        const progressContainer = document.getElementById("progress-container");
+        const timeDisplay = document.getElementById("time-display");
+        const songNameElement = document.getElementById("song-name");
+        const songAlbumElement = document.getElementById("song-album");
+        const albumArt = document.getElementById("album-art");
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? "0" + sec : sec}`;
+        }
+
+        function updateProgress() {
+            if (!audio.duration) return;
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressFilled.style.width = percent + "%";
+            const thumb = document.getElementById("progress-thumb");
+            thumb.style.left = percent + "%";
+            timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
+        }
+        let isDragging = false;
+
+        function startDrag(event) {
+            isDragging = true;
+            moveThumb(event);
+        }
+
+        function moveThumb(event) {
+            if (!isDragging) return;
+            const rect = progressContainer.getBoundingClientRect();
+            let clickX = event.clientX - rect.left;
+            const progressWidth = rect.width;
+            clickX = Math.max(0, Math.min(clickX, progressWidth));
+            const clickRatio = clickX / progressWidth;
+            const progressPercent = clickRatio * 100;
+            progressFilled.style.width = `${progressPercent}%`;
+            progressThumb.style.left = `${progressPercent}%`;
+            if (audio.duration) {
+                audio.currentTime = clickRatio * audio.duration;
+            }
+        }
+
+        function endDrag() {
+            isDragging = false;
+        }
+
+        function seek(event) {
+            const rect = progressContainer.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const progressWidth = rect.width;
+            const clickRatio = clickX / progressWidth;
+            if (audio.duration) {
+                audio.currentTime = clickRatio * audio.duration;
+            }
+        }
+        progressContainer.addEventListener("click", seek);
+        progressThumb.addEventListener("mousedown", startDrag);
+        document.addEventListener("mousemove", moveThumb);
+        document.addEventListener("mouseup", endDrag);
+
+        playBtn.addEventListener("click", () => {
+            if (audio.paused) {
+                audio.play();
+                playBtn.textContent = "⏸";
+            } else {
+                audio.pause();
+                playBtn.textContent = "▶";
+            }
+        });
+
+        audio.addEventListener("timeupdate", updateProgress);
+
+        function getSongName(url) {
+            const params = new URLSearchParams(new URL(url).search);
+            return params.get("songName");
+        }
+        const songName = getSongName(window.location.href);
+        if (!songName) {
+            songNameElement.textContent = "No song playing";
+        } else {
+            fetch("https://eyescary-development.github.io/CDN/musik/songlist.json")
+                .then((res) => res.json())
+                .then((data) => {
+                    const songs = Object.values(data);
+                    const song = songs.find(s => s.songTitle === songName);
+                    if (song) {
+                        audio.src = song.songUrl;
+                        songNameElement.textContent = song.songTitle;
+                        songAlbumElement.textContent = song.albumTitle || "";
+                        if (song.albumArt) {
+                            albumArt.src = song.albumArt;
+                            albumArt.style.display = "block";
+                        }
+                    } else {
+                        songNameElement.textContent = "Song not found";
+                    }
+                })
+                .catch(err => {
+                    console.error("Error loading song list", err);
+                    songNameElement.textContent = "Error loading song";
+                });
+        }
+    </script>
+</body>
+
+</html>
