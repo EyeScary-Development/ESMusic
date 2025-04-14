@@ -6,10 +6,10 @@ import Layout from "../layouts/Layout.astro";
     <div class="queue" style="justify-content: space-between">
         <h3 style="display: block;">Song Queue</h3>
         <h3 class="queue-buttons">
-            <button onclick="clearQueue()">clear queue</button>
-            <button onclick="importPlist()">Import queue/playlist</button>
-            <button onclick="exportPlist()">Export queue</button>
-            <button id="droptoggle" onclick="dropdown()">↓</button>
+            <button id="clear-queue">clear queue</button>
+            <button id="import-playlist">Import queue/playlist</button>
+            <button id="export-playlist">Export queue</button>
+            <button id="droptoggle">↓</button>
         </h3>
         <div id="dropdown" style="display: none; width: 100%; clear: both;">
             <ul id="song-queue"></ul>
@@ -28,16 +28,12 @@ import Layout from "../layouts/Layout.astro";
                 <div id="progress-thumb"></div>
             </div>
             <div id="time-display">
-                <span id="current-time">0:00</span> / <span id="total-duration"
-                    >0:00</span
-                >
+                <span id="current-time">0:00</span> / <span id="total-duration">0:00</span>
             </div>
             <div class="control-buttons">
-                <button onclick="togglePlayPause()" id="play-pause-button"
-                    >⏵</button
-                >
-                <button onclick="stopSong()">⏹</button>
-                <button onclick="skipSong()">⏭</button>
+                <button id="play-pause-button">⏵</button>
+                <button id="stop-button">⏹</button>
+                <button id="skip-button">⏭</button>
             </div>
         </div>
 
@@ -45,7 +41,8 @@ import Layout from "../layouts/Layout.astro";
     </div>
     <div id="toast-container"><h1>test</h1></div>
 </Layout>
-<script is:inline>
+
+<script>
     const audioPlayer = document.getElementById("audio-player");
     const currentSong = document.getElementById("current-song");
     const playPauseButton = document.getElementById("play-pause-button");
@@ -57,14 +54,12 @@ import Layout from "../layouts/Layout.astro";
     const songQueueElement = document.getElementById("song-queue");
     const toast = document.getElementById('toast-container');
 
-    let songQueue = [];
+    let songQueue: string[] = [];
     let isDragging = false;
 
     function formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60)
-            .toString()
-            .padStart(2, "0");
+        const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
         return `${minutes}:${secs}`;
     }
 
@@ -123,16 +118,6 @@ import Layout from "../layouts/Layout.astro";
         moveThumb(event);
     }
 
-    function dropdown() {
-        if (document.getElementById("dropdown").style.display === "none") {
-            document.getElementById("dropdown").style.display = "flex";
-            document.getElementById("droptoggle").innerHTML = "↑";
-        } else {
-            document.getElementById("dropdown").style.display = "none";
-            document.getElementById("droptoggle").innerHTML = "↓";
-        }
-    }
-
     function moveThumb(event) {
         if (!isDragging) return;
 
@@ -164,15 +149,15 @@ import Layout from "../layouts/Layout.astro";
                 playNextInQueue();
             } else {
                 showToast();
-                setTimeout(hideToast, 3000);
                 toast.innerHTML = "Added to queue";
+                setTimeout(hideToast, 3000);
             }
         }
     }
 
     function downloadURI(uri, name) {
-        var link = document.createElement("a");
-        link.download = name; // <- name instead of 'name'
+        const link = document.createElement("a");
+        link.download = name;
         link.href = uri;
         link.click();
         link.remove();
@@ -185,25 +170,20 @@ import Layout from "../layouts/Layout.astro";
     }
 
     function importPlist() {
-        console.log("upSave requested");
-
-        var input = document.createElement("input");
+        const input = document.createElement("input");
         input.type = "file";
         input.accept = ".espl";
 
         input.onchange = (e) => {
-            var file = e.target.files[0];
+            const file = e.target.files[0];
             if (!file) return;
 
-            var reader = new FileReader();
+            const reader = new FileReader();
             reader.readAsText(file, "UTF-8");
 
             reader.onload = (readerEvent) => {
-                var content = readerEvent.target.result.trim();
-                console.log("File content:", content);
-
-                var plist = content.split(",");
-
+                const content = readerEvent.target.result.trim();
+                const plist = content.split(",");
                 plist.forEach((item) => addToQueue(item));
             };
         };
@@ -252,44 +232,17 @@ import Layout from "../layouts/Layout.astro";
         }
     }
 
-    audioPlayer.addEventListener("timeupdate", updateProgress);
-    audioPlayer.addEventListener("loadedmetadata", () => {
-        totalDurationDisplay.textContent = formatTime(audioPlayer.duration);
-    });
-    audioPlayer.addEventListener("ended", () => {
-        playNextInQueue();
-    });
-
-    progressContainer.addEventListener("click", seek);
-    progressThumb.addEventListener("mousedown", startDrag);
-    document.addEventListener("mousemove", moveThumb);
-    document.addEventListener("mouseup", endDrag);
-    document.addEventListener("DOMContentLoaded", function () {
-        showToast();
-        toast.innerHTML = "Loading songs...";
-        fetch("https://eyescary-development.github.io/CDN/musik/songlist.json")
-            .then((response) => response.json())
-            .then((songs) => {
-                const songsArray = Object.values(songs);
-                for (const song of songsArray) {
-                    document.getElementById("song-list").innerHTML +=
-                        "<div class='song-card'> <img src='" +
-                        song.albumArt +
-                        "' alt='Album Art'><p class='song-title'>" +
-                        song.songTitle +
-                        "</p><p class='album-title'>" +
-                        song.albumTitle +
-                        "</p><button class='play-button' onclick='addToQueue(`" +
-                        song.songUrl +
-                        "`)'>Play</button></div>";
-                }
-                toast.innerHTML = "Song list loaded";
-                setTimeout(hideToast, 3000);
-            })
-            .catch((error) =>
-                console.error("Error fetching the song list:", error),
-            ); // Handle any errors
-    });
+    function dropdown() {
+        const dropdown = document.getElementById("dropdown");
+        const toggleBtn = document.getElementById("droptoggle");
+        if (dropdown.style.display === "none") {
+            dropdown.style.display = "flex";
+            toggleBtn.innerHTML = "↑";
+        } else {
+            dropdown.style.display = "none";
+            toggleBtn.innerHTML = "↓";
+        }
+    }
 
     function showToast() {
         clearTimeout(toast.timeout);
@@ -300,4 +253,52 @@ import Layout from "../layouts/Layout.astro";
         toast.classList.remove('show');
     }
 
+    // Event Listeners
+    audioPlayer.addEventListener("timeupdate", updateProgress);
+    audioPlayer.addEventListener("loadedmetadata", () => {
+        totalDurationDisplay.textContent = formatTime(audioPlayer.duration);
+    });
+    audioPlayer.addEventListener("ended", playNextInQueue);
+
+    progressContainer.addEventListener("click", seek);
+    progressThumb.addEventListener("mousedown", startDrag);
+    document.addEventListener("mousemove", moveThumb);
+    document.addEventListener("mouseup", endDrag);
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("clear-queue").addEventListener("click", clearQueue);
+        document.getElementById("import-playlist").addEventListener("click", importPlist);
+        document.getElementById("export-playlist").addEventListener("click", exportPlist);
+        document.getElementById("droptoggle").addEventListener("click", dropdown);
+        document.getElementById("play-pause-button").addEventListener("click", togglePlayPause);
+        document.getElementById("stop-button").addEventListener("click", stopSong);
+        document.getElementById("skip-button").addEventListener("click", skipSong);
+
+        showToast();
+        toast.innerHTML = "Loading songs...";
+        fetch("https://eyescary-development.github.io/CDN/musik/songlist.json")
+            .then((response) => response.json())
+            .then((songs) => {
+                const songsArray = Object.values(songs);
+                for (const song of songsArray) {
+                    document.getElementById("song-list").innerHTML +=
+                        `<div class='song-card'>
+                            <img src='${song.albumArt}' alt='Album Art'>
+                            <p class='song-title'>${song.songTitle}</p>
+                            <p class='album-title'>${song.albumTitle}</p>
+                            <button class='play-button' data-url='${song.songUrl}'>Play</button>
+                        </div>`;
+                }
+                toast.innerHTML = "Song list loaded";
+                setTimeout(hideToast, 3000);
+            })
+            .catch((error) => console.error("Error fetching the song list:", error));
+    });
+
+    document.getElementById("song-list").addEventListener("click", (e) => {
+        if (e.target && e.target.classList.contains("play-button")) {
+            const url = e.target.dataset.url;
+            addToQueue(url);
+        }
+    });
 </script>
