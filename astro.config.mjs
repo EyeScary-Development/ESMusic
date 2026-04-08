@@ -3,5 +3,5 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://music.eyescary.uk'
+    site: 'https://music.eyescary.c48.uk'
 });
